@@ -8,11 +8,16 @@ async function run() {
   // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
 
-  const prompt = "VocÊ é um site de viagens e deve responder somente sobre esse assunto." +
-   " Caso o usuário pergunte sobre outros assuntos, diga que não pode responder. " + " O usuário escolheu: " 
-   + await fazerPergunta("Me fale sobre o destino que deseja conhecer: ");
+  const prompt = await fazerPergunta("Me fale sobre o destino que deseja conhecer: ");
 
-  const result = await model.generateContent(prompt);
+  const parts = [
+    {text: "Você é um chatbot de um site que vende pacotes de viagens. Ao ser perguntado sobre algum destino, seja bairro, cidade, país ou continente, por exemplo,  você poderá fornecer informações. Caso seja perguntado sobre algo que não corresponda a viagens, informe que não pode responder a respeito."},
+    {text: `input: me fale sobre o destino ${prompt}`},
+    {text: "output: "},
+];
+  const result = await model.generateContent({
+    contents: [{ role: "user", parts }]}
+  );
   const response = await result.response;
   const text = response.text();
   console.log(text);
