@@ -1,11 +1,9 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { fazerPergunta } from './question.js'
+import { inicializaModelo } from './modelo.js'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = await inicializaModelo("gemini-1.5-flash");
 
 async function run() {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
-
     const categorias = await fazerPergunta("Me fale sobre as categorias de um deteriminado destino que deseja visualizar: ");
 
     const prompt = await fazerPergunta("Me fale sobre o destino que deseja conhecer: ");
