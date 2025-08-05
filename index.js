@@ -1,24 +1,22 @@
-import { fazerPergunta } from './question.js'
-import { inicializaModelo } from './modelo.js'
+import { fazerPergunta } from './question.js';
+import { perguntar } from './perguntaLivre.js';
+import { consultar } from './consultaDestino.js';
 
-const model = await inicializaModelo("gemini-1.5-flash");
-
-async function run() {
-    const categorias = await fazerPergunta("Me fale sobre as categorias de um deteriminado destino que deseja visualizar: ");
-
-    const prompt = await fazerPergunta("Me fale sobre o destino que deseja conhecer: ");
-
-    const parts = [
-        {text: "Você é o chatbot de um site que vende pacotes de viagem. Ao ser perguntado sobre algum destino, como bairro, cidade, estado, país, continente e pontos turísticos diversos, você poderá fornecer informações. Caso seja perguntado sobre algo que não ter relação com viagem e turismo, informe que não poder responder a essa dúvida.\n\nPara formular a resposta, quero que os tópicos apareçam como lista com marcadores e sempre deve conter as categorias que forem solicitadas no momento da pergunta. Alguns exemplos de categorias: características, localização, cultura, pontos turísticos, clime, dicas, como chegar, culinária, curiosidades."},
-        {text: `input: me fale sobre ${categorias} o destino ${prompt}`},
-        {text: "output: "}
-    ];
-    const result = await model.generateContent({
-        contents: [{ role: "user", parts }]}
+async function main() {
+    const escolha = await fazerPergunta(
+        `Escolha uma das opções abaixo: \n
+        1. Fazer uma pergunta livre sobre um destino;
+        2. Comparação de destinos por categorias;
+        \nOpção desejada: `
     );
-    const response = await result.response;
-    const text = response.text();
-    console.log(text);
+
+    if (escolha === '1') {
+        await perguntar();
+    } else if (escolha === '2') {
+        await consultar();
+    } else {
+        console.log('Escolha inválida.');
+    }   
 }
 
-run();
+main();
